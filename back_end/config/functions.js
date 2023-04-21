@@ -65,51 +65,62 @@ const date_now = () => {
 }
 
 const insert_result = (data) => {
-    const sf = data[0]['sf'];
-    const date_format = date_now();
-    const sql_abreviature = `insert into abreviature ( acronime, consultation_date ) values ? `;
-    const rows_abreviature = [
-        [sf, date_format]
-    ];
-    connection.query(sql_abreviature, [rows_abreviature], function (err, result) {
-        if (err) throw err;
-        console.log("Number of records inserted at table Abreviature: " + result.affectedRows);
-        const lfs = data[0]['lfs'].length - 1;
-        const sql_representation = `insert into representation (representation_acronime, frequency, since, 	abreviature_id) values ?`;
-        const rows_representation = [];
-        for (i = 0; i <= lfs; i++) {
-            rows_representation.push([
-                data[0]['lfs'][i]['lf'],
-                data[0]['lfs'][i]['freq'],
-                data[0]['lfs'][i]['since'],
-                result.insertId
-            ])
-        }
-        connection.query(sql_representation, [rows_representation], function (err, result) {
+
+   
+    if(data.length == []){
+        return [{
+            'error': 'records 0'
+        }]
+    }else{
+
+        const sf = data[0]['sf'];
+        const date_format = date_now();
+        const sql_abreviature = `insert into abreviature ( acronime, consultation_date ) values ? `;
+        const rows_abreviature = [
+            [sf, date_format]
+        ];
+        connection.query(sql_abreviature, [rows_abreviature], function (err, result) {
             if (err) throw err;
-            console.log("Number of records inserted at table Representation: " + result.affectedRows);
+            console.log("Number of records inserted at table Abreviature: " + result.affectedRows);
             const lfs = data[0]['lfs'].length - 1;
-            const sql_vars_representation = `insert into vars_representation (var_representation_acronime, frequency, since, representation_id) values ?`;
-            const rows_vars_representation = [];
-            let representation_id = result.insertId;
+            const sql_representation = `insert into representation (representation_acronime, frequency, since, 	abreviature_id) values ?`;
+            const rows_representation = [];
             for (i = 0; i <= lfs; i++) {
-                const vars = data[0]['lfs'][i]['vars'].length - 1;
-                for (j = 0; j <= vars; j++) {
-                    rows_vars_representation.push([
-                        data[0]['lfs'][i]['vars'][j]['lf'],
-                        data[0]['lfs'][i]['vars'][j]['freq'],
-                        data[0]['lfs'][i]['vars'][j]['since'],
-                        representation_id
-                    ])
-                }
-                representation_id++;
+                rows_representation.push([
+                    data[0]['lfs'][i]['lf'],
+                    data[0]['lfs'][i]['freq'],
+                    data[0]['lfs'][i]['since'],
+                    result.insertId
+                ])
             }
-            connection.query(sql_vars_representation, [rows_vars_representation], function (err, result) {
+            connection.query(sql_representation, [rows_representation], function (err, result) {
                 if (err) throw err;
-                console.log("Number of records inserted at table vars_representation: " + result.affectedRows);
+                console.log("Number of records inserted at table Representation: " + result.affectedRows);
+                const lfs = data[0]['lfs'].length - 1;
+                const sql_vars_representation = `insert into vars_representation (var_representation_acronime, frequency, since, representation_id) values ?`;
+                const rows_vars_representation = [];
+                let representation_id = result.insertId;
+                for (i = 0; i <= lfs; i++) {
+                    const vars = data[0]['lfs'][i]['vars'].length - 1;
+                    for (j = 0; j <= vars; j++) {
+                        rows_vars_representation.push([
+                            data[0]['lfs'][i]['vars'][j]['lf'],
+                            data[0]['lfs'][i]['vars'][j]['freq'],
+                            data[0]['lfs'][i]['vars'][j]['since'],
+                            representation_id
+                        ])
+                    }
+                    representation_id++;
+                }
+                connection.query(sql_vars_representation, [rows_vars_representation], function (err, result) {
+                    if (err) throw err;
+                    console.log("Number of records inserted at table vars_representation: " + result.affectedRows);
+                });
             });
         });
-    });
+
+    }
+   
 
 }
 

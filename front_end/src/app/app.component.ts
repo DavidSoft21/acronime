@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
   dataTable: Result[] = [];
 
   ngOnInit() {
-    this.dataTable.length = 0;
+    this.dataTable= [];
     this._apiService.getFilter().subscribe((respuesta: any) => {
       for (let index = 0; index < respuesta.length; index++) {
         this.dataTable.push(
@@ -65,6 +65,8 @@ export class AppComponent implements OnInit {
     this.dataTable = [];
     this._apiService.getData(argumento).subscribe((res) => {
       for (let index = 0; index < res.length; index++) {
+    
+        
         this.dataTable.push(
           new Result(
             res[index].acronime_id,
@@ -103,6 +105,7 @@ export class AppComponent implements OnInit {
           );
         }
         this.dataSource = new MatTableDataSource(this.dataTable);
+        location.reload();
       })
     });
   }

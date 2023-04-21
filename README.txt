@@ -36,5 +36,3 @@ de esta manera tendremos conectado el servidor a nuestro motor de bases de datos
 y por ultimo en nuestro frontend ejecutar 
 
 ng serve nos dirijimos a la siguiente ruta: http://localhost:4200
-
-
